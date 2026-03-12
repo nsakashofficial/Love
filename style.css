@@ -1,0 +1,126 @@
+/* মেইন বডি সেটআপ */
+body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle, #2b0000 0%, #000000 100%);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ব্যাকগ্রাউন্ড হার্ট এনিমেশন */
+.heart {
+    position: absolute;
+    bottom: -10%;
+    color: #ff2d55;
+    filter: drop-shadow(0 0 5px #ff2d55);
+    z-index: 1;
+    user-select: none;
+}
+
+/* মেইন কার্ড স্টাইল */
+#main-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 50px 30px;
+    border-radius: 25px;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* টাইটেল এবং টেক্সট */
+h1 {
+    color: #fff;
+    font-size: 24px;
+    margin-top: 15px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 45, 85, 0.5);
+}
+
+p {
+    color: #cbcbcb;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 20px 0 30px;
+}
+
+/* কন্টিনিউ বাটন */
+#continue-btn {
+    background: linear-gradient(135deg, #ff2d55, #ff6b81);
+    color: white;
+    border: none;
+    padding: 15px 45px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(255, 45, 85, 0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+#continue-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(255, 45, 85, 0.6);
+}
+
+#continue-btn:active {
+    transform: translateY(0);
+}
+
+/* রিট্রাই ওভারলে (Persistent Screen) */
+#retry-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000;
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.warning-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+#retry-btn {
+    margin-top: 25px;
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#retry-btn:hover {
+    background: #ff2d55;
+    color: #fff;
+}
+
+/* এনিমেশনসমূহ */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
